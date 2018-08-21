@@ -22,11 +22,14 @@ describe('app', () => {
         expect(response.text[0]).toBe('<');
       });
   });
-  it('responds with 500 for /500', ()=>{
+  it('responds with JSON for /api/cowsay?text={message}', ()=>{
     return request(app)
-      .post('/500')
-      .expect(500)
-      .expect('Content-Type', 'text/html')
-      .expect('Test Error');
+      .post('/api/cowsay?text=hi')
+      .expect(200)
+      .expect(response =>{
+        console.log(response);
+        expect(response.text[2]).toBe('c');
+      })
+      .expect('Content-Type', 'application/json');
   });
 });
