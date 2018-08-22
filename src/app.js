@@ -35,9 +35,11 @@ function requestHandler(req,res){
         html(res, `<!DOCTYPE html><html><head><title> cowsay </title>  </head><body><h1> cowsay </h1><pre>${cowsay.say({text: req.query.text})}</pre></body></html>`);
         return;
       }
-      if(req.method === 'POST' && req.parsedUrl.pathname === '/api/cowsay' && req.query.text){
-        console.log('Method is post');
-        json(res, req.query.text);
+      if(req.method === 'GET' && req.parsedUrl.pathname === '/api/cowsay' && req.query.text){
+        console.log('Method is GET');
+        json(res, {
+          content: cowsay.say(req.query),
+        });
         return;
       }
       notFound(res);
@@ -58,12 +60,12 @@ function html(res, content, statusCode=200, statusMessage='OK'){
   res.end();
 }
 
-function json(res, content){
-  if(content){
+function json(res, object){
+  if(object){
     res.statusCode = 200;
     res.statusMessage = 'OK';
     res.setHeader('Content-Type', 'application/json');
-    res.write(`{"content": "<${content}>"}`);
+    res.write(JSON.stringify(object));
     res.end();
   } else{
     res.statusCode = 400;
