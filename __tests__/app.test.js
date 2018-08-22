@@ -4,6 +4,8 @@ const request = require('supertest');
 
 const app = require('../src/app');
 
+const cowsay = require('cowsay');
+
 describe('app', () => {
   it('responds with 404 for unknown path', ()=>{
     return request(app)
@@ -45,5 +47,41 @@ describe('app', () => {
         expect(response.body).toBeDefined();
         expect(response.body.content).toMatch(' hi ');
       });
+  });
+  it('responds with JSON for a POST /api/v1/notes', ()=>{
+    return request(app)
+      .post('/api/v1/notes')
+      .send({text: 'hi'})
+      .expect(200)
+      .expect(response =>{
+        expect(response.body).toEqual({"text": "hi"});
+      });
+  });
+  describe('api routes', () => {
+    it('can get /api/v1/notes', () => {
+      return request(app)
+        .get('/api/v1/notes?id=124')
+        .expect(200)
+        .expect('Content-Type', 'application/json')
+        .expect(response=>{
+          expect(response.body).toEqual({ message: `ID 124 was requested` });
+        });
+    });
+    it('can delete /api/v1/notes?id=deleteme', () => {
+      return request(app)
+        .delete('/api/notes?id=deleteme')
+        .expect(200)
+        .expect('Content-Type', 'application/json')
+        .expect({ message: `ID deleteme was deleted` });
+    });
+    it('can put to /api/v1/notes', ()=>{
+      return request(app)
+        .put('/api/v1/notes?id=124')
+        .expect(200)
+        .expect('Content-Type', 'application/json')
+        .expect(response =>{
+          expect(response.body).toEqual({"id": "124"});
+        });
+    });
   });
 });
