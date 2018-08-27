@@ -1,4 +1,4 @@
-Lab 08: HTTP Routing
+cf Lab 09: Vanilla REST API w/ Persistence
 Submission Instructions
 Work in a fork of this repository
 Work in a branch on your fork
@@ -33,39 +33,29 @@ __test__/ - contains unit tests
 Learning Objectives
 students will learn to use promise constructs to manage asynchronous code
 students will learn to create a vanilla RESTful API with in-memory persistence
+students will learn how to save resource data to the file system for a layer of data persistence
+students will learn how to refactor commonly used coding constructs into custom helper modules
 Feature Tasks
-create the following directories to organize your code:
-src
-src/lib
-src/api
-__test__
+continue working on your http server from the previous class
 create an HTTP server using the native NodeJS http module
 create a custom parser module that:
 uses promises to parse the JSON body of POST and PUT requests
 uses the NodeJS url and querystring modules to parse the request url
 create a router constructor that allows you to register custom routes for GET, POST, PUT, and DELETE requests
-create a router constructor that handles requests to GET, POST, PUT, and DELETE using the custom routes defined
+create a data model constructor that creates a simple resource (notes) with at least 3 properties
+include two additional properties of your choice (ex: name, content, etc.)
+create a data model storage interface that can store data through different storage mechanisms.
+saving should add an id property that is set to a unique id (hint: you'll need to use uuid)
+create storage modules for in-memory and filesystem storage
 Server Endpoints
-/api/vi/notes
-These will be "proof of life" endpoints, to prove server health
-
+`/api/v1/notes
 POST request
-pass data as stringifed JSON in the body of a POST request
-return a 200 response with the POST'd JSON as the content
-(Prove that you got the JSON from the POST)
-PUT request
-pass ?id=<uuid> as a query string parameter to identify a specific resource
-pass data as stringifed JSON in the body of a PUT request
-return a 200 response with the JSON as the content
-(Prove that you got the JSON from the PUT)
+pass data as stringifed JSON in the body of a POST request to create a new resource
 GET request
-pass ?id=<uuid> as a query string parameter to identify a specific resource
-return a 200 response, and a message that states "ID: " was requested
-(Prove that you got the id from the query string)
+pass ?id=<uuid> as a query string parameter to retrieve a specific resource (as JSON)
 DELETE request
-pass ?id=<uuid> as a query string parameter to identify a specific resource
-return a 200 response, and a message that states "ID: " was deleted
-(Prove that you got the id from the query string)
+pass ?id=<uuid> in the query string to DELETE a specific resource
+this should return a 204 status code with no content in the body
 Tests
 write a test to ensure that your api returns a status code of 404 for routes that have not been registered
 write tests to ensure the /api/simple-resource-name endpoint responds as described for each condition below:
