@@ -42,13 +42,13 @@ create a custom parser module that:
 uses promises to parse the JSON body of POST and PUT requests
 uses the NodeJS url and querystring modules to parse the request url
 create a router constructor that allows you to register custom routes for GET, POST, PUT, and DELETE requests
-create a data model constructor that creates a simple resource (notes) with at least 3 properties
+create a data model constructor that creates a simple resource (Instruments) with at least 3 properties
 include two additional properties of your choice (ex: name, content, etc.)
 create a data model storage interface that can store data through different storage mechanisms.
 saving should add an id property that is set to a unique id (hint: you'll need to use uuid)
 create storage modules for in-memory and filesystem storage
 Server Endpoints
-`/api/v1/notes
+`/api/v1/instruments
 POST request
 pass data as stringifed JSON in the body of a POST request to create a new resource
 GET request
