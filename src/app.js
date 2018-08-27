@@ -129,24 +129,3 @@ function notFound(res){
   res.write('Resource Not Found');
   res.end();
 }
-
-
-
-
-
-
-
-
-/* Notes:
-we want:
--router.get('/', (req, res)=>...)
-  -router.routes.GET{
-    '/': function
-  }
--router.post('/api/notes',)
-  -router.routes.POST{
-    'api/notes': function
-  }
-
-
-*/

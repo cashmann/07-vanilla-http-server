@@ -105,10 +105,3 @@ class FakeRequest extends EventEmitter {
   }
 }
 
-class FakePost extends EventEmitter{
-  constructor(url, method = 'POST'){
-    super();
-    this.url = url;
-    this.method = method;
-  }
-}
