@@ -1,18 +1,17 @@
 'use strict';
 
-const os = require('os');
-const fs = require('fs');
+import { tmpdir } from 'os';
+import fs from 'fs';
+import uuid from 'uuid/v4';
+
 const readFilePromise = promisify(fs.readFile);
 const readdirPromise = promisify(fs.readdir);
 const writeFilePromise = promisify(fs.writeFile);
-const uuid = require('uuid/v4');
 
-class FilesystemStorage {
+export default class FilesystemStorage {
   constructor(schema) {
     this.schema = schema;
-
-    // Ensure schema data dir exists
-    this.path = `${os.tmpdir}/${this.schema}`;
+    this.path = `${tmpdir}/${this.schema}`;
     console.log({ path: this.path });
     try {
       fs.mkdirSync(this.path);
@@ -60,7 +59,6 @@ class FilesystemStorage {
       .then(files => {
         console.log({ files });
         return Promise.all(
-          // strip extension from id.json
           files.map(file => this.get(file.substring(0, file.length-5)))
         );
       })
@@ -71,10 +69,6 @@ class FilesystemStorage {
   }
 }
 
-module.exports = FilesystemStorage;
-
-// Usage: promisify(fs.readFile)
-// readFilePromise(path).then(...)
 function promisify (asyncFunction) {
   return (...args) =>
     new Promise((resolve, reject) => {

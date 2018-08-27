@@ -1,7 +1,12 @@
 'use strict';
-const router = require('../lib/router');
-const cowsay = require('cowsay');
-const Note = require('../lib/models/note');
+import express from 'express';
+const router = express.Router();
+
+export default router;
+
+import Note from '../lib/models/note';
+
+import cowsay from 'cowsay';
 
 router.post('/500', (req, res) => {
   throw new Error('Test Error');

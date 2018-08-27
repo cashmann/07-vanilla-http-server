@@ -2,15 +2,15 @@
 
 const request = require('supertest');
 
-const app = require('../src/app');
+import app from '../src/app';
+//import Note from '../src/lib/models/note';
 
 describe('app', () => {
   it('responds with 404 for unknown path', ()=>{
     return request(app)
       .get('/404')
       .expect(404)
-      .expect('Content-Type', 'text/html')
-      .expect('Resource Not Found');
+      .expect('Content-Type', 'text/html; charset=utf-8');
   });
 
   it('responds with HTML for /', ()=>{
@@ -40,7 +40,7 @@ describe('app', () => {
     return request(app)
       .get('/api/cowsay?text=hi')
       .expect(200)
-      .expect('Content-Type', 'application/json')
+      .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(response =>{
         expect(response.body).toBeDefined();
         expect(response.body.content).toMatch(' hi ');

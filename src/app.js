@@ -1,12 +1,11 @@
 'use strict';
 
-const http = require('http');
+import express from 'express';
+const app = express();
 
-const router = require('./lib/router');
-const cowsay = require('cowsay');
+export default app;
 
-const app = http.createServer(requestHandler);
-module.exports = app;
+import cowsay from 'cowsay';
 
 app.start = (port) =>{
   return new Promise((resolve, reject)=>{
@@ -20,54 +19,51 @@ app.start = (port) =>{
   });
 };
 
-function requestHandler(req, res) {
+
+app.use((req,res,next)=>{
   console.log(`${req.method} ${req.url}`);
+  next();
+});
 
-  router.route(req, res)
-    .catch(err => {
-      if (err === 404) {
-        notFound(res);
-        return;
-      }
-
-      console.error(err);
-      html(res, err.message, 500, 'Internal Server Error');
-    });
-}
-
-router.post('/500', (req, res) => {
+app.post('/500', (req, res) => {
   throw new Error('Test Error');
 });
-router.get('/', (req, res) => {
+app.get('/', (req, res) => {
   html(res, '<!DOCTYPE html><html><head><title> cowsay </title>  </head><body><header><nav><ul><li><a href="/cowsay">cowsay</a></li></ul></nav><header><main><!-- project description --></main></body></html>');
 });
-router.get('/cowsay', (req, res) =>{
+app.get('/cowsay', (req, res) =>{
   html(res, `<!DOCTYPE html><html><head><title> cowsay </title>  </head><body><h1> cowsay </h1><pre>${cowsay.say({text: req.query.text})}</pre></body></html>`);
 });
-router.get('/api/cowsay', (req, res) =>{
-  json(res, {
+app.get('/api/cowsay', (req, res) =>{
+  res.json({
     content: cowsay.say(req.query),
   });
 });
-router.get('/api/v1/notes', (req,res) =>{
+app.get('/api/v1/notes', (req,res) =>{
   requestMessage(res, req.query.id);
 });
-router.post('/api/cowsay', (req, res) => {
-  json(res, {
+app.post('/api/cowsay', (req, res) => {
+  res.json({
     message: `Hello, ${req.body.name}!`,
   });
 });
-router.post('/api/v1/notes', (req, res) =>{
+app.post('/api/v1/notes', (req, res) =>{
   json(res, req.body);
 });
-router.put('/api/v1/notes', (req,res)=>{
+app.put('/api/v1/notes', (req,res)=>{
   json(res, req.query);
 });
-router.delete('/api/v1/notes', (req,res)=>{
+app.delete('/api/v1/notes', (req,res)=>{
   deleteMessage(res, req.query.id);
 });
 
-require('./api/api');
+import router from './api/api';
+app.use(router);
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  next(err);
+});
 
 function html(res, content, statusCode=200, statusMessage='OK'){
   res.statusCode = statusCode;
@@ -120,12 +116,4 @@ function json(res, object){
     res.write('{"error": "invalid request: text query required"}');
     res.end();
   }
-}
-  
-function notFound(res){
-  res.statusCode = 404;
-  res.statusMessage = 'Not Found';
-  res.setHeader('Content-Type', 'text/html');
-  res.write('Resource Not Found');
-  res.end();
 }
