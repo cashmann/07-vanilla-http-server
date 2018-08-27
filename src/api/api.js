@@ -4,7 +4,7 @@ const router = express.Router();
 
 export default router;
 
-import Note from '../lib/models/note';
+import Instrument from '../lib/models/instrument';
 
 import cowsay from 'cowsay';
 
@@ -22,31 +22,37 @@ router.get('/api/cowsay', (req, res) =>{
     content: cowsay.say(req.query),
   });
 });
-router.get('/api/v1/notes', (req,res) =>{
-  if (req.query.id) {
-    return Note.findById(req.query.id)
-      .then(note => {
-        json(res, note);
-      });
-  }
+router.get('/api/v1/instruments/:id', (req,res) =>{
+  return Instrument.findById(req.params.id)
+    .then(instrument => {
+      res.json(instrument);
+    });
 });
 router.post('/api/cowsay', (req, res) => {
   json(res, {
     message: `Hello, ${req.body.name}!`,
   });
 });
-router.post('/api/v1/notes', (req, res) =>{
-  var newNote = new Note(req.body);
-  newNote.save()
+router.post('/api/v1/instruments', (req, res) =>{
+  console.log(req.body);
+  if (!req.body || !req.body.name || !req.body.class || !req.body.retailer) {
+    res.send(400);
+    res.end();
+    return;
+  }
+  var newInstrument = new Instrument(req.body);
+  newInstrument.save()
     .then(saved=>{
       json(res, saved);
     });
 });
-router.put('/api/v1/notes', (req,res)=>{
+router.put('/api/v1/instruments', (req,res)=>{
   json(res, req.query);
 });
-router.delete('/api/v1/notes', (req,res)=>{
-  deleteMessage(res, req.query.id);
+router.delete('/api/v1/instruments/:id', (req,res)=>{
+  res.json({
+    message: `ID ${req.params.id} was deleted`,
+  });
 });
 
 function html(res, content, statusCode=200, statusMessage='OK'){
@@ -57,22 +63,6 @@ function html(res, content, statusCode=200, statusMessage='OK'){
   res.end();
 }
 
-
-
-function deleteMessage(res, object){
-  if(object){
-    res.statusCode = 204;
-    res.statusMessage = 'OK';
-    res.setHeader('Content-Type', 'application/json');
-    res.write({message: `ID ${object} was deleted`});
-    res.end();
-  } else{
-    res.statusCode = 400;
-    res.statusMessage = 'Invalid Request';
-    res.write('{"error": "invalid request: text query required"}');
-    res.end();
-  }
-}
   
 function json(res, object){
   if(object){

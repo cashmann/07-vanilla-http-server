@@ -3,7 +3,7 @@
 const request = require('supertest');
 
 import app from '../src/app';
-//import Note from '../src/lib/models/note';
+import Instrument from '../src/lib/models/instrument';
 
 describe('app', () => {
   it('responds with 404 for unknown path', ()=>{
@@ -48,14 +48,46 @@ describe('app', () => {
   });
   
   describe('api routes', () => {
-    it('can put to /api/v1/notes', ()=>{
+    it('can put to /api/v1/instruments', ()=>{
       return request(app)
-        .put('/api/v1/notes?id=124')
+        .put('/api/v1/instruments?id=124')
         .expect(200)
         .expect('Content-Type', 'application/json')
         .expect(response =>{
           expect(response.body).toEqual({'id': '124'});
         });
+    });
+    it('can POST /api/v1/instruments to create instrument', () => {
+      return request(app)
+        .post('/api/v1/instruments')
+        .send({ name: 'Trumpet', class: 'Brass', retailer: 'Reimans' })
+        .expect(200)
+        .expect('Content-Type', 'application/json')
+        .expect(response => {
+          expect(response.body).toBeDefined();
+          expect(response.body.id).toBeDefined();
+          expect(response.body.name).toBe('Trumpet');
+          expect(response.body.class).toBe('Brass');
+        });
+    });
+    it('can get /api/v1/instruments/:id', () => {
+      var instrument = new Instrument({ name: 'Trumpet', class: 'Brass', retailer: 'Reimans' });
+
+      return instrument.save()
+        .then(saved => {
+          return request(app)
+            .get(`/api/v1/instruments/${saved.id}`)
+            .expect(200)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(saved);
+        });
+    });
+    it('can delete /api/notes/deleteme', () => {
+      return request(app)
+        .delete('/api/v1/instruments/deleteme')
+        .expect(200)
+        .expect('Content-Type', 'application/json; charset=utf-8')
+        .expect({ message: `ID deleteme was deleted` });
     });
   });
 });
