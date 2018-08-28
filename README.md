@@ -1,4 +1,4 @@
-cf Lab 09: Vanilla REST API w/ Persistence
+cf 12: Express Middleware
 Submission Instructions
 Work in a fork of this repository
 Work in a branch on your fork
@@ -31,36 +31,18 @@ src/app.js - (or main.js) contains your core application bootstrap
 src/lib/ - contains module definitions
 __test__/ - contains unit tests
 Learning Objectives
-students will learn to use promise constructs to manage asynchronous code
-students will learn to create a vanilla RESTful API with in-memory persistence
-students will learn how to save resource data to the file system for a layer of data persistence
-students will learn how to refactor commonly used coding constructs into custom helper modules
+students will be able to work with application, router, and 3rd party middleware through the use of express.js
+students will be able to implement custom middleware through the use of express.js
+students will be able to create custom routers for a specific resource
+students will be able to leverage 3rd party helper modules for debugging, logging, and handling errors
 Feature Tasks
-continue working on your http server from the previous class
-create an HTTP server using the native NodeJS http module
-create a custom parser module that:
-uses promises to parse the JSON body of POST and PUT requests
-uses the NodeJS url and querystring modules to parse the request url
-create a router constructor that allows you to register custom routes for GET, POST, PUT, and DELETE requests
-create a data model constructor that creates a simple resource (Instruments) with at least 3 properties
-include two additional properties of your choice (ex: name, content, etc.)
-create a data model storage interface that can store data through different storage mechanisms.
-saving should add an id property that is set to a unique id (hint: you'll need to use uuid)
-create storage modules for in-memory and filesystem storage
-Server Endpoints
-`/api/v1/instruments
-POST request
-pass data as stringifed JSON in the body of a POST request to create a new resource
-GET request
-pass ?id=<uuid> as a query string parameter to retrieve a specific resource (as JSON)
-DELETE request
-pass ?id=<uuid> in the query string to DELETE a specific resource
-this should return a 204 status code with no content in the body
-Tests
-write a test to ensure that your api returns a status code of 404 for routes that have not been registered
-write tests to ensure the /api/simple-resource-name endpoint responds as described for each condition below:
-GET: test 404, it should respond with 'not found' for valid requests made with an id that was not found
-GET: test 400, it should respond with 'bad request' if no id was provided in the request
-GET: test 200, it should contain a response body for a request made with a valid id
-POST: test 400, it should respond with 'bad request' if no request body was provided or the body was invalid
-POST: test 200, it should respond with the body content for a post request with a valid body
+use the npm debug module to log the methods in your application
+create an npm script to automate the debug process and start the server
+Don't forget to set DEBUG in your .env!
+create a single resource express API that can handle GET, POST, and PUT requests
+Choose your own resource, as long as it's not Note or Person
+create an error-middleware module to handle errors and use it in your server file
+create a model module to handle dynamic models and use it in your server file
+create methods for filesystem and memory modules to handle GET, POST, and PUT operations.
+create a series of acceptance tests to test your GET, POST, and PUT routes
+hint: you'll want to use the before and after hooks provided by jest in order to create a test note and delete the note after the test has completed

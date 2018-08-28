@@ -1,6 +1,6 @@
 'use strict';
 
-/*export default (req, res, next)=>{
+export default (req, res, next)=>{
   if(req.headers['accept'] !== 'application/json'){
     next();
     return;
@@ -9,4 +9,4 @@
   res.json({
     error: 'Not Found',
   });
-};*/
+};
