@@ -1,6 +1,10 @@
 'use strict';
 
 import express from 'express';
+import morgan from 'morgan';
+import json404 from './lib/middleware/json-404';
+import error from './lib/middleware/error';
+
 const app = express();
 
 export default app;
@@ -19,11 +23,7 @@ app.start = (port) =>{
   });
 };
 
-
-app.use((req,res,next)=>{
-  console.log(`${req.method} ${req.url}`);
-  next();
-});
+app.use(morgan('dev'));
 
 app.use(express.json());
 
@@ -45,11 +45,9 @@ app.get('/api/cowsay', (req, res) =>{
 
 import router from './api/api';
 app.use(router);
+app.use(json404);
 
-app.use((err, req, res, next) => {
-  console.error(err);
-  next(err);
-});
+app.use(error);
 
 function html(res, content, statusCode=200, statusMessage='OK'){
   res.statusCode = statusCode;

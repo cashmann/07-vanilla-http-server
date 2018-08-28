@@ -34,7 +34,6 @@ router.post('/api/cowsay', (req, res) => {
   });
 });
 router.post('/api/v1/instruments', (req, res) =>{
-  console.log(req.body);
   if (!req.body || !req.body.name || !req.body.class || !req.body.retailer) {
     res.send(400);
     res.end();
