@@ -7,7 +7,7 @@ import error from './lib/middleware/error';
 
 const app = express();
 
-export default app;
+module.exports = app;
 
 import cowsay from 'cowsay';
 
