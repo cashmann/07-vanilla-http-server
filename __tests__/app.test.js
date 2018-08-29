@@ -55,10 +55,16 @@ describe('app', () => {
         .then(saved => {
           return request(app)
             .put(`/api/v1/instruments/${saved.id}`)
-            .send({ name: 'Trumpet', class: 'Brass', retailer: 'West Music'})
+            .send({ name: saved.name, class: saved.class, retailer: 'West Music'})
             .expect(200)
             .expect('Content-Type', 'application/json; charset=utf-8')
-            .expect(saved);
+            // .expect(saved) // saved still has old retailer
+            .expect(({ body }) => {
+              expect(body).toBeDefined();
+              expect(body.name).toBe(saved.name);
+              expect(body.class).toBe(saved.class);
+              expect(body.retailer).toBe('West Music');
+            });
         });
     });
     it('can POST /api/v1/instruments to create instrument', () => {

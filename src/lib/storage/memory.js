@@ -16,17 +16,20 @@ export default class MemoryStorage {
       ));
     }
 
-    document.id = uuid();
-    this.data[document.id] = document;
+    let toSave = {
+      id: uuid(),
+      ...document,
+    };
+    this.data[toSave.id] = toSave;
     debug('saved', this);
-    return Promise.resolve(document);
+    return Promise.resolve(toSave);
   }
 
   get(id) {
     return new Promise((resolve, reject) => {
       var result = this.data[id];
       if (result) {
-        resolve(result);
+        resolve({ ...result });
       } else {
         reject(new Error(
           `Document with id "${id}" in schema "${this.schema}" not found`
@@ -37,7 +40,7 @@ export default class MemoryStorage {
 
   getAll() {
     return Promise.resolve(
-      Object.values(this.data)
+      Object.values(this.data).map(entry => ({ ...entry }))
     );
   }
 }

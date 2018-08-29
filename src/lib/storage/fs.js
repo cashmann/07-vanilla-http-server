@@ -30,13 +30,16 @@ export default class FilesystemStorage {
       ));
     }
 
-    document.id = uuid();
-    let path = `${this.path}/${document.id}.json`;
+    let toSave = {
+      id: uuid(),
+      ...document,
+    };
+    let path = `${this.path}/${toSave.id}.json`;
     return writeFilePromise(
       path,
-      JSON.stringify(document)
+      JSON.stringify(toSave)
     ).then(() => {
-      return document;
+      return toSave;
     });
   }
 
