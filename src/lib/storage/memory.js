@@ -1,4 +1,5 @@
 'use strict';
+const debug = require('debug')('storage/fs');
 
 import uuid from 'uuid/v4';
 
@@ -17,7 +18,7 @@ export default class MemoryStorage {
 
     document.id = uuid();
     this.data[document.id] = document;
-    console.log('saved', this);
+    debug('saved', this);
     return Promise.resolve(document);
   }
 

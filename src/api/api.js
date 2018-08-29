@@ -34,7 +34,6 @@ router.post('/api/cowsay', (req, res) => {
   });
 });
 router.post('/api/v1/instruments', (req, res) =>{
-  console.log(req.body);
   if (!req.body || !req.body.name || !req.body.class || !req.body.retailer) {
     res.send(400);
     res.end();
@@ -43,11 +42,19 @@ router.post('/api/v1/instruments', (req, res) =>{
   var newInstrument = new Instrument(req.body);
   newInstrument.save()
     .then(saved=>{
-      json(res, saved);
+      res.json(saved);
     });
 });
-router.put('/api/v1/instruments', (req,res)=>{
-  json(res, req.query);
+router.put('/api/v1/instruments/:id', (req,res)=>{
+  return Instrument.findById(req.params.id)
+    .then(instrument =>{
+      instrument.name = req.body.name;
+      instrument.class = req.body.class;
+      instrument.retailer = req.body.retailer;
+      res.json(instrument);
+      res.end();
+      return;
+    });
 });
 router.delete('/api/v1/instruments/:id', (req,res)=>{
   res.json({

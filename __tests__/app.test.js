@@ -48,13 +48,17 @@ describe('app', () => {
   });
   
   describe('api routes', () => {
-    it('can put to /api/v1/instruments', ()=>{
-      return request(app)
-        .put('/api/v1/instruments?id=124')
-        .expect(200)
-        .expect('Content-Type', 'application/json')
-        .expect(response =>{
-          expect(response.body).toEqual({'id': '124'});
+    it('can PUT to /api/v1/instruments', ()=>{
+      var instrument = new Instrument({ name: 'Trumpet', class: 'Brass', retailer: 'Reimans' });
+
+      return instrument.save()
+        .then(saved => {
+          return request(app)
+            .put(`/api/v1/instruments/${saved.id}`)
+            .send({ name: 'Trumpet', class: 'Brass', retailer: 'West Music'})
+            .expect(200)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(saved);
         });
     });
     it('can POST /api/v1/instruments to create instrument', () => {
@@ -62,7 +66,7 @@ describe('app', () => {
         .post('/api/v1/instruments')
         .send({ name: 'Trumpet', class: 'Brass', retailer: 'Reimans' })
         .expect(200)
-        .expect('Content-Type', 'application/json')
+        .expect('Content-Type', 'application/json; charset=utf-8')
         .expect(response => {
           expect(response.body).toBeDefined();
           expect(response.body.id).toBeDefined();
