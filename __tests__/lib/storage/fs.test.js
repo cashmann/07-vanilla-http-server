@@ -14,8 +14,13 @@ describe('FileStorage', () => {
   it('can save an object', () => {
     var store = new Storage('test');
 
-    return store.save({ name: 'Keith' })
+    var toSave = { name: 'Keith' };
+
+    return store.save(toSave)
       .then(saved => {
+        expect(toSave).not.toBe(saved);
+        expect(toSave.id).not.toBeDefined();
+
         expect(saved).toBeDefined();
         expect(saved.id).toBeDefined();
         expect(saved.name).toBe('Keith');
@@ -23,6 +28,7 @@ describe('FileStorage', () => {
         return store.get(saved.id)
           .then(fromStore => {
             expect(fromStore).toEqual(saved);
+            expect(fromStore).not.toBe(saved);
           });
       });
   });
