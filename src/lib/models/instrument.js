@@ -1,26 +1,13 @@
 'use strict';
 
-import Storage from '../storage';
-const instrumentStore = new Storage('Instruments');
+import mongoose, { Schema } from 'mongoose';
 
-export default class Instrument {
-  constructor(obj) {
-    if (!obj) throw new Error('obj is required!');
+const instrumentSchema = Schema({
+  name: { type: String, required: true},
+  family: { type: String, required: true},
+  retailer: { type: String},
+});
 
-    this.name = obj.name;
-    this.class = obj.class;
-    this.retailer = obj.retailer;
-  }
+const Instrument = mongoose.models.instrument || mongoose.model('instrument', instrumentSchema);
 
-  save() {
-    return instrumentStore.save(this);
-  }
-
-  static fetchAll() {
-    return instrumentStore.getAll();
-  }
-
-  static findById(id) {
-    return instrumentStore.get(id);
-  }
-}
+export default Instrument;

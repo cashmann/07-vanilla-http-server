@@ -22,8 +22,14 @@ router.get('/api/cowsay', (req, res) =>{
     content: cowsay.say(req.query),
   });
 });
-router.get('/api/v1/instruments/:id', (req,res) =>{
-  return Instrument.findById(req.params.id)
+router.get('/api/v1/instruments', (req,res) =>{
+  return Instrument.find()
+    .then(instruments => {
+      res.json(instruments);
+    });
+});
+router.get('/api/v1/instruments/:_id', (req,res) =>{
+  return Instrument.findById(req.params._id)
     .then(instrument => {
       res.json(instrument);
     });
@@ -34,31 +40,31 @@ router.post('/api/cowsay', (req, res) => {
   });
 });
 router.post('/api/v1/instruments', (req, res) =>{
-  if (!req.body || !req.body.name || !req.body.class || !req.body.retailer) {
+  if (!req.body || !req.body.name || !req.body.family || !req.body.retailer) {
     res.send(400);
     res.end();
     return;
   }
-  var newInstrument = new Instrument(req.body);
+  var newInstrument = new Instrument({...req.body});
   newInstrument.save()
     .then(saved=>{
       res.json(saved);
     });
 });
-router.put('/api/v1/instruments/:id', (req,res)=>{
-  return Instrument.findById(req.params.id)
+router.put('/api/v1/instruments/:_id', (req,res)=>{
+  return Instrument.findById(req.params._id)
     .then(instrument =>{
       instrument.name = req.body.name;
-      instrument.class = req.body.class;
+      instrument.family = req.body.family;
       instrument.retailer = req.body.retailer;
       res.json(instrument);
       res.end();
       return;
     });
 });
-router.delete('/api/v1/instruments/:id', (req,res)=>{
+router.delete('/api/v1/instruments/:_id', (req,res)=>{
   res.json({
-    message: `ID ${req.params.id} was deleted`,
+    message: `ID ${req.params._id} was deleted`,
   });
 });
 

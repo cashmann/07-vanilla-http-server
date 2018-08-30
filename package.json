@@ -5,8 +5,8 @@
   "scripts": {
     "lint": "eslint .",
     "start": "node .",
-    "test": "jest",
-    "watch": "nodemon ."
+    "test": "cross-env DEBUG=app* jest",
+    "watch": "cross-env DEBUG=* nodemon ."
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/DeltaVCode-cr-401js-2018/07-vanilla-http-server#readme",
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "eslint": "^5.4.0",
     "jest": "^23.5.0",
     "nodemon": "^1.18.3",
@@ -33,6 +34,7 @@
     "debug": "^3.1.0",
     "dotenv": "^6.0.0",
     "express": "^4.16.3",
+    "mongoose": "^5.2.10",
     "morgan": "^1.9.0",
     "uuid": "^3.3.2"
   }
