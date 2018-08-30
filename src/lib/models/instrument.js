@@ -9,5 +9,8 @@ const instrumentSchema = Schema({
 });
 
 const Instrument = mongoose.models.instrument || mongoose.model('instrument', instrumentSchema);
+mongoose.model('instrument', instrumentSchema, 'instrument');
+
+Instrument.route = 'instruments';
 
 export default Instrument;

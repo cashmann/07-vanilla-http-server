@@ -19,40 +19,6 @@ describe('app', () => {
       .expect(404)
       .expect('Content-Type', 'text/html; charset=utf-8');
   });
-
-  it('responds with HTML for /', ()=>{
-    return request(app)
-      .get('/')
-      .expect(200)
-      .expect('Content-Type', 'text/html')
-      .expect(response =>{
-        expect(response.text[0]).toBe('<');
-      });
-  });
-
-  it('responds with HTML for /cowsay?text={message}', ()=>{
-    return request(app)
-      .get('/cowsay?text=hi')
-      .expect(200)
-      .expect('Content-Type', 'text/html')
-      .expect(response =>{
-        expect(response.text).toBeDefined();
-        expect(response.text).toMatch('<html>');
-        expect(response.text).toMatch(' hi ');
-        expect(response.text).toMatch('</html>');
-      });
-  });
-
-  it('responds with JSON for /api/cowsay?text={message}', ()=>{
-    return request(app)
-      .get('/api/cowsay?text=hi')
-      .expect(200)
-      .expect('Content-Type', 'application/json; charset=utf-8')
-      .expect(response =>{
-        expect(response.body).toBeDefined();
-        expect(response.body.content).toMatch(' hi ');
-      });
-  });
   
   describe('api routes', () => {
     it('can PUT to /api/v1/instruments', ()=>{
