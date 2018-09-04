@@ -68,12 +68,18 @@ describe('app', () => {
             });
         });
     });
-    it('can delete /api/notes/deleteme', () => {
-      return request(app)
-        .delete('/api/v1/instruments/deleteme')
-        .expect(200)
-        .expect('Content-Type', 'application/json; charset=utf-8')
-        .expect({ message: `ID deleteme was deleted` });
+  });
+  describe('DELETE', ()=>{
+    let testInst;
+    beforeEach(()=>{
+      testInst = new Instrument({title: 'test', class: 'test'});
+      return testInst.save()
+        .then(()=>{
+          return request(app)
+            .delete(`/api/instruments/${testInst._id}`)
+            .expect(200)
+            .expect({ message: `ID ${testInst._id} was deleted` });
+        });
     });
   });
 });

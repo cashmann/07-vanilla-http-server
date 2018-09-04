@@ -72,10 +72,18 @@ router.put('/api/v1/:model/:_id', (req,res,next)=>{
     })
     .catch(next);
 });
-router.delete('/api/v1/instruments/:_id', (req,res)=>{
-  res.json({
-    message: `ID ${req.params._id} was deleted`,
-  });
+router.delete('/api/v1/:model/:_id', (req,res, next)=>{
+  req.Model.findByIdAndRemove(req.params.id)
+    .then(removed => {
+      if (!removed) {
+        return next();
+      }
+
+      res.json({
+        message: `ID ${req.params._id} was deleted`,
+      });
+    })
+    .catch(next);
 });
 
 function html(res, content, statusCode=200, statusMessage='OK'){

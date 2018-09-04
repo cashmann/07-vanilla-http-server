@@ -43,7 +43,12 @@ describe('instrument model', () => {
           expect(instrument._id).toEqual(testInstrument._id);
         });
     });
+    it('returns code 200 with JSON for a successful removal', ()=>{
+      return Instrument.findByIdAndRemove(testInstrument._id)
+        .then(instrument=>{
+          expect(instrument).toBeDefined();
+        });
+    });
   });
-  // TODO: test Instrument.findById()
   // TODO: test Instrument.remove() <= how does this work?
 });
