@@ -25,11 +25,30 @@ describe('instrument model', () => {
     return expect(instrument.save())
       .rejects.toBeDefined();
   });
-  // TODO: test Instrument.find()
-  it('can find an instrument', ()=>{
-    console.log(Instrument.find({}));
-     
+  describe('find by ID', ()=>{
+    let testInstrument;
+    beforeAll(()=>{
+      testInstrument = new Instrument({
+        name: 'Test',
+        family: 'Test',
+        retailer: null,
+      });
+      return testInstrument.save();
+    });
+    it('can find an instrument by its ID', ()=>{
+      return Instrument.findById(testInstrument._id)
+        .then(instrument=>{
+          expect(instrument).toBeDefined();
+          expect(instrument.name).toBe('Test');
+          expect(instrument._id).toEqual(testInstrument._id);
+        });
+    });
+    it('returns code 200 with JSON for a successful removal', ()=>{
+      return Instrument.findByIdAndRemove(testInstrument._id)
+        .then(instrument=>{
+          expect(instrument).toBeDefined();
+        });
+    });
   });
-  // TODO: test Instrument.findById()
   // TODO: test Instrument.remove() <= how does this work?
 });

@@ -19,40 +19,6 @@ describe('app', () => {
       .expect(404)
       .expect('Content-Type', 'text/html; charset=utf-8');
   });
-
-  it('responds with HTML for /', ()=>{
-    return request(app)
-      .get('/')
-      .expect(200)
-      .expect('Content-Type', 'text/html')
-      .expect(response =>{
-        expect(response.text[0]).toBe('<');
-      });
-  });
-
-  it('responds with HTML for /cowsay?text={message}', ()=>{
-    return request(app)
-      .get('/cowsay?text=hi')
-      .expect(200)
-      .expect('Content-Type', 'text/html')
-      .expect(response =>{
-        expect(response.text).toBeDefined();
-        expect(response.text).toMatch('<html>');
-        expect(response.text).toMatch(' hi ');
-        expect(response.text).toMatch('</html>');
-      });
-  });
-
-  it('responds with JSON for /api/cowsay?text={message}', ()=>{
-    return request(app)
-      .get('/api/cowsay?text=hi')
-      .expect(200)
-      .expect('Content-Type', 'application/json; charset=utf-8')
-      .expect(response =>{
-        expect(response.body).toBeDefined();
-        expect(response.body.content).toMatch(' hi ');
-      });
-  });
   
   describe('api routes', () => {
     it('can PUT to /api/v1/instruments', ()=>{
@@ -102,12 +68,18 @@ describe('app', () => {
             });
         });
     });
-    it('can delete /api/notes/deleteme', () => {
-      return request(app)
-        .delete('/api/v1/instruments/deleteme')
-        .expect(200)
-        .expect('Content-Type', 'application/json; charset=utf-8')
-        .expect({ message: `ID deleteme was deleted` });
+  });
+  describe('DELETE', ()=>{
+    let testInst;
+    beforeEach(()=>{
+      testInst = new Instrument({title: 'test', class: 'test'});
+      return testInst.save()
+        .then(()=>{
+          return request(app)
+            .delete(`/api/instruments/${testInst._id}`)
+            .expect(200)
+            .expect({ message: `ID ${testInst._id} was deleted` });
+        });
     });
   });
 });

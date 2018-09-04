@@ -3,8 +3,8 @@ import express from 'express';
 const router = express.Router();
 
 export default router;
-
-import Instrument from '../lib/models/instrument';
+import modelFinder from '../lib/middleware/models';
+router.param('model', modelFinder);
 
 import cowsay from 'cowsay';
 
@@ -22,50 +22,68 @@ router.get('/api/cowsay', (req, res) =>{
     content: cowsay.say(req.query),
   });
 });
-router.get('/api/v1/instruments', (req,res) =>{
-  return Instrument.find()
-    .then(instruments => {
-      res.json(instruments);
+router.get('/api/v1/:model', (req,res,next) =>{
+  req.Model.find({})
+    .then(models => {
+      res.json(models);
     });
 });
-router.get('/api/v1/instruments/:_id', (req,res) =>{
-  return Instrument.findById(req.params._id)
-    .then(instrument => {
-      res.json(instrument);
-    });
+router.get('/api/v1/:model/:_id', (req,res,next) =>{
+  return req.Model.findById(req.params._id)
+    .then(model => {
+      if(model === null){
+        res.sendStatus(404);
+        return;
+      }
+      res.json(model);
+    })
+    .catch(next);
 });
 router.post('/api/cowsay', (req, res) => {
   json(res, {
     message: `Hello, ${req.body.name}!`,
   });
 });
-router.post('/api/v1/instruments', (req, res) =>{
-  if (!req.body || !req.body.name || !req.body.family || !req.body.retailer) {
+router.post('/api/v1/:model', (req, res, next) =>{
+  if (!req.body) {
     res.send(400);
     res.end();
     return;
   }
-  var newInstrument = new Instrument({...req.body});
-  newInstrument.save()
+  var newModel = new req.Model(req.body);
+  newModel.save()
     .then(saved=>{
-      res.json(saved);
-    });
+      return req.Model.findById(saved._id);
+    })
+    .then(found =>{
+      res.json(found);
+    })
+    .catch(next);
 });
-router.put('/api/v1/instruments/:_id', (req,res)=>{
-  return Instrument.findById(req.params._id)
-    .then(instrument =>{
-      instrument.name = req.body.name;
-      instrument.family = req.body.family;
-      instrument.retailer = req.body.retailer;
-      res.json(instrument);
+router.put('/api/v1/:model/:_id', (req,res,next)=>{
+  return req.Model.findById(req.params._id)
+    .then(model =>{
+      model.name = req.body.name;
+      model.family = req.body.family;
+      model.retailer = req.body.retailer;
+      res.json(model);
       res.end();
       return;
-    });
+    })
+    .catch(next);
 });
-router.delete('/api/v1/instruments/:_id', (req,res)=>{
-  res.json({
-    message: `ID ${req.params._id} was deleted`,
-  });
+router.delete('/api/v1/:model/:_id', (req,res, next)=>{
+  req.Model.findByIdAndRemove(req.params.id)
+    .then(removed => {
+      if (!removed) {
+        return next();
+      }
+
+      res.json({
+        message: `ID ${req.params._id} was deleted`,
+      });
+    })
+    .catch(next);
 });
 
 function html(res, content, statusCode=200, statusMessage='OK'){
